@@ -1,0 +1,85 @@
+name: data-cleaning-benchmark
+version: "1.0.0"
+description: >
+  A multi-task LLM agent benchmark for real-world tabular data cleaning.
+  The agent receives a dirty dataset and must apply structured cleaning
+  actions to fix duplicates, missing values, format issues, and outliers.
+
+author: "Jayesh"
+license: MIT
+
+tasks:
+  - id: task1_easy
+    name: "Basic Customer Data Cleanup"
+    difficulty: easy
+    max_steps: 20
+    description: "Remove duplicates, fill missing values, standardise country names."
+  - id: task2_medium
+    name: "E-commerce Orders Normalisation"
+    difficulty: medium
+    max_steps: 20
+    description: "Fix mixed date formats, convert price strings, correct category typos."
+  - id: task3_hard
+    name: "Analytics Data Deep Clean"
+    difficulty: hard
+    max_steps: 20
+    description: "Resolve duplicate user IDs, clip session outliers, fix invalid bounce rates."
+
+observation_space:
+  type: structured_json
+  fields:
+    - task_id
+    - task_description
+    - table_preview
+    - schema_info
+    - valid_actions
+    - step / max_steps
+    - cleaning_log
+    - issues_detected
+
+action_space:
+  type: structured_json
+  actions:
+    - name: fill_missing
+      params: [column, strategy(mean|median|mode|constant), value?]
+    - name: standardize_values
+      params: [column, mapping(dict)]
+    - name: remove_duplicates
+      params: []
+    - name: remove_row
+      params: [row_id(int)]
+    - name: convert_type
+      params: [column, target_type(float|int|str|datetime)]
+    - name: clip_outliers
+      params: [column, lower?, upper?]
+    - name: submit
+      params: []
+
+reward:
+  type: shaped
+  intermediate: true
+  range: [-0.20, 1.00]
+  description: >
+    Positive rewards for correct cleaning steps; small penalties for
+    invalid or wasted actions; final grader score awarded on submit().
+
+api:
+  base_path: "/"
+  endpoints:
+    reset: "POST /reset"
+    step: "POST /step/{session_id}"
+    state: "GET  /state/{session_id}"
+    health: "GET  /health"
+    tasks: "GET  /tasks"
+
+runtime:
+  language: python
+  version: "3.11"
+  port: 7860
+  framework: fastapi
+
+tags:
+  - openenv
+  - data-cleaning
+  - llm-benchmark
+  - tabular
