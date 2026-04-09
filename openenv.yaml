@@ -58,7 +58,7 @@ action_space:
 reward:
   type: shaped
   intermediate: true
-  range: [-0.20, 1.00]
+  range: [-0.20, 0.99]
   description: >
     Positive rewards for correct cleaning steps; small penalties for
     invalid or wasted actions; final grader score awarded on submit().

@@ -81,7 +81,7 @@ docker run -p 7860:7860 \
 
 | Task | Score |
 |------|-------|
-| task1_easy | 1.00 |
+| task1_easy | 0.99 |
 | task2_medium | 0.90 |
 | task3_hard | 0.97 |
 
