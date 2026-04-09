@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from typing import Any, Dict
 
@@ -23,7 +23,7 @@ TASK1_DESCRIPTION = (
     "1) Remove exact duplicate rows\n"
     "2) Fill missing emails using constant 'unknown@email.com'\n"
     "3) Fill missing ages using median\n"
-    "4) Standardize country names → 'United States', 'United Kingdom', 'Canada', 'Australia'"
+    "4) Standardize country names to United States, United Kingdom, Canada, Australia"
 )
 
 TASK2_DIRTY = [
@@ -129,7 +129,7 @@ TASK2_DESCRIPTION = (
     "Clean an e-commerce orders dataset. Issues to fix:\n"
     "1) Normalise all dates to YYYY-MM-DD format using convert_type(date, datetime)\n"
     "2) Convert price column to float (strips $ signs automatically)\n"
-    "3) Standardise category typos: 'Furnitre'→'Furniture', 'ELECTRONICS'→'Electronics', 'Electronix'→'Electronics'\n"
+    "3) Standardise category typos: Furnitre to Furniture, ELECTRONICS to Electronics, Electronix to Electronics\n"
     "4) Fill missing price with median; fill or remove missing category rows"
 )
 
@@ -150,16 +150,36 @@ TASK3_DIRTY = [
 
 TASK3_DESCRIPTION = (
     "Clean a web analytics dataset. Issues to fix:\n"
-    "1) Remove duplicate user_ids (exact + near-duplicates — keep first occurrence)\n"
+    "1) Remove duplicate user_ids (exact + near-duplicates, keep first occurrence)\n"
     "2) Clip session_duration outliers to max 1000 seconds\n"
     "3) Clip bounce_rate to valid range [0.0, 1.0]\n"
     "4) Fill missing page_views with median"
 )
 
-TASK_GRADER_ENTRYPOINTS = {
+TASK4_DESCRIPTION = (
+    "Alternative medium data-cleaning scenario based on e-commerce orders.\n"
+    "Use the same cleaning operations as task2_medium and submit a clean table."
+)
+
+TASK5_DESCRIPTION = (
+    "Alternative hard data-cleaning scenario based on analytics logs.\n"
+    "Use the same cleaning operations as task3_hard and submit a clean table."
+)
+
+TASK_GRADER_ENTRYPOINTS_COLON = {
     "task1_easy": "env.graders:grade_task1_easy",
     "task2_medium": "env.graders:grade_task2_medium",
     "task3_hard": "env.graders:grade_task3_hard",
+    "task4_medium_alt": "env.graders:grade_task4_medium_alt",
+    "task5_hard_alt": "env.graders:grade_task5_hard_alt",
+}
+
+TASK_GRADER_ENTRYPOINTS_DOTTED = {
+    "task1_easy": "env.graders.grade_task1_easy",
+    "task2_medium": "env.graders.grade_task2_medium",
+    "task3_hard": "env.graders.grade_task3_hard",
+    "task4_medium_alt": "env.graders.grade_task4_medium_alt",
+    "task5_hard_alt": "env.graders.grade_task5_hard_alt",
 }
 
 
@@ -168,26 +188,47 @@ def get_task(task_id: str) -> Dict[str, Any]:
         "task1_easy": {
             "description": TASK1_DESCRIPTION,
             "dirty_df": pd.DataFrame(TASK1_DIRTY),
+            "task_id": "task1_easy",
             "difficulty": "easy",
-            "grader": TASK_GRADER_ENTRYPOINTS["task1_easy"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task1_easy"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task1_easy"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task1_easy"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task1_easy"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task1_easy"],
         },
         "task2_medium": {
             "description": TASK2_DESCRIPTION,
             "dirty_df": pd.DataFrame(TASK2_DIRTY),
+            "task_id": "task2_medium",
             "difficulty": "medium",
-            "grader": TASK_GRADER_ENTRYPOINTS["task2_medium"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task2_medium"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task2_medium"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task2_medium"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task2_medium"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task2_medium"],
         },
         "task3_hard": {
             "description": TASK3_DESCRIPTION,
             "dirty_df": pd.DataFrame(TASK3_DIRTY),
+            "task_id": "task3_hard",
             "difficulty": "hard",
-            "grader": TASK_GRADER_ENTRYPOINTS["task3_hard"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task3_hard"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task3_hard"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task3_hard"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task3_hard"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task3_hard"],
+        },
+        "task4_medium_alt": {
+            "description": TASK4_DESCRIPTION,
+            "dirty_df": pd.DataFrame(TASK2_DIRTY),
+            "task_id": "task4_medium_alt",
+            "difficulty": "medium",
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task4_medium_alt"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task4_medium_alt"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task4_medium_alt"],
+        },
+        "task5_hard_alt": {
+            "description": TASK5_DESCRIPTION,
+            "dirty_df": pd.DataFrame(TASK3_DIRTY),
+            "task_id": "task5_hard_alt",
+            "difficulty": "hard",
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task5_hard_alt"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task5_hard_alt"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task5_hard_alt"],
         },
     }
     if task_id not in registry:
@@ -197,33 +238,54 @@ def get_task(task_id: str) -> Dict[str, Any]:
     return cfg
 
 
-TASK_IDS = ["task1_easy", "task2_medium", "task3_hard"]
+TASK_IDS = ["task1_easy", "task2_medium", "task3_hard", "task4_medium_alt", "task5_hard_alt"]
 
 
 def list_tasks() -> list[dict[str, Any]]:
     return [
         {
             "id": "task1_easy",
+            "task_id": "task1_easy",
             "difficulty": "easy",
             "max_steps": 20,
-            "grader": TASK_GRADER_ENTRYPOINTS["task1_easy"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task1_easy"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task1_easy"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task1_easy"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task1_easy"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task1_easy"],
         },
         {
             "id": "task2_medium",
+            "task_id": "task2_medium",
             "difficulty": "medium",
             "max_steps": 20,
-            "grader": TASK_GRADER_ENTRYPOINTS["task2_medium"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task2_medium"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task2_medium"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task2_medium"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task2_medium"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task2_medium"],
         },
         {
             "id": "task3_hard",
+            "task_id": "task3_hard",
             "difficulty": "hard",
             "max_steps": 20,
-            "grader": TASK_GRADER_ENTRYPOINTS["task3_hard"],
-            "grader_fn": TASK_GRADER_ENTRYPOINTS["task3_hard"],
-            "grader_path": TASK_GRADER_ENTRYPOINTS["task3_hard"],
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task3_hard"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task3_hard"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task3_hard"],
+        },
+        {
+            "id": "task4_medium_alt",
+            "task_id": "task4_medium_alt",
+            "difficulty": "medium",
+            "max_steps": 20,
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task4_medium_alt"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task4_medium_alt"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task4_medium_alt"],
+        },
+        {
+            "id": "task5_hard_alt",
+            "task_id": "task5_hard_alt",
+            "difficulty": "hard",
+            "max_steps": 20,
+            "grader": TASK_GRADER_ENTRYPOINTS_DOTTED["task5_hard_alt"],
+            "grader_fn": TASK_GRADER_ENTRYPOINTS_COLON["task5_hard_alt"],
+            "grader_path": TASK_GRADER_ENTRYPOINTS_COLON["task5_hard_alt"],
         },
     ]

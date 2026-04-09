@@ -10,29 +10,50 @@ license: MIT
 
 tasks:
   - id: task1_easy
+    task_id: task1_easy
     name: "Basic Customer Data Cleanup"
     difficulty: easy
     max_steps: 20
     description: "Remove duplicates, fill missing values, standardise country names."
-    grader: env.graders:grade_task1_easy
+    grader: env.graders.grade_task1_easy
     grader_fn: env.graders:grade_task1_easy
     grader_path: env.graders:grade_task1_easy
   - id: task2_medium
+    task_id: task2_medium
     name: "E-commerce Orders Normalisation"
     difficulty: medium
     max_steps: 20
     description: "Fix mixed date formats, convert price strings, correct category typos."
-    grader: env.graders:grade_task2_medium
+    grader: env.graders.grade_task2_medium
     grader_fn: env.graders:grade_task2_medium
     grader_path: env.graders:grade_task2_medium
   - id: task3_hard
+    task_id: task3_hard
     name: "Analytics Data Deep Clean"
     difficulty: hard
     max_steps: 20
     description: "Resolve duplicate user IDs, clip session outliers, fix invalid bounce rates."
-    grader: env.graders:grade_task3_hard
+    grader: env.graders.grade_task3_hard
     grader_fn: env.graders:grade_task3_hard
     grader_path: env.graders:grade_task3_hard
+  - id: task4_medium_alt
+    task_id: task4_medium_alt
+    name: "E-commerce Orders Cleanup (Alt)"
+    difficulty: medium
+    max_steps: 20
+    description: "Alternative medium scenario sharing the same grading criteria as task2_medium."
+    grader: env.graders.grade_task4_medium_alt
+    grader_fn: env.graders:grade_task4_medium_alt
+    grader_path: env.graders:grade_task4_medium_alt
+  - id: task5_hard_alt
+    task_id: task5_hard_alt
+    name: "Analytics Deep Clean (Alt)"
+    difficulty: hard
+    max_steps: 20
+    description: "Alternative hard scenario sharing the same grading criteria as task3_hard."
+    grader: env.graders.grade_task5_hard_alt
+    grader_fn: env.graders:grade_task5_hard_alt
+    grader_path: env.graders:grade_task5_hard_alt
 
 observation_space:
   type: structured_json
@@ -67,7 +88,7 @@ action_space:
 reward:
   type: shaped
   intermediate: true
-  range: [-0.20, 0.99]
+  range: [0.01, 0.99]
   description: >
     Positive rewards for correct cleaning steps; small penalties for
     invalid or wasted actions; final grader score awarded on submit().
@@ -76,8 +97,10 @@ api:
   base_path: "/"
   endpoints:
     reset: "POST /reset"
-    step: "POST /step/{session_id}"
-    state: "GET  /state/{session_id}"
+    step: "POST /step"
+    state: "GET  /state"
+    step_legacy: "POST /step/{session_id}"
+    state_legacy: "GET  /state/{session_id}"
     health: "GET  /health"
     tasks: "GET  /tasks"
 
