@@ -125,8 +125,18 @@ def grade_task3_hard(df: pd.DataFrame) -> float:
     return grade_task3(df)
 
 
+def grade_task4_medium_alt(df: pd.DataFrame) -> float:
+    return grade_task2(df)
+
+
+def grade_task5_hard_alt(df: pd.DataFrame) -> float:
+    return grade_task3(df)
+
+
 TASK_GRADERS = {
     "task1_easy": grade_task1_easy,
     "task2_medium": grade_task2_medium,
     "task3_hard": grade_task3_hard,
+    "task4_medium_alt": grade_task4_medium_alt,
+    "task5_hard_alt": grade_task5_hard_alt,
 }
